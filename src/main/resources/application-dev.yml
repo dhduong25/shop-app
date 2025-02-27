@@ -1,0 +1,46 @@
+spring:
+     datasource:
+          hikari:
+               # Đặt tên pool connection (hữu ích cho logging/monitoring).
+               pool-name: DatabasePool
+
+               # Thời gian chờ tối đa (60 giây) để lấy một connection từ pool.
+               connection-timeout: 60000
+
+               # Số lượng connection tối thiểu trong trạng thái rỗi (idle).
+               minimum-idle: 0
+
+               # Số lượng connection tối đa trong pool.
+               maximum-pool-size: 100
+
+               # Thời gian tối đa (300 giây) một connection rỗi trước khi bị loại bỏ.
+               idle-timeout: 300000
+
+               # Thời gian tối đa (30 phút) một connection được giữ trong pool trước khi bị loại bỏ.
+               max-lifetime: 1800000
+
+               # Bật chế độ tự động commit.
+               auto-commit: true
+          shop-app-mysql:
+               url: ${DB_URL}
+               driver-class-name: com.mysql.cj.jdbc.Driver
+               username: ${USER_NAME}
+               password: ${PASSWORD}
+     jpa:
+          hibernate:
+               ddl-auto: update
+          properties:
+               hibernate:
+                    dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+     port: ${PORT:3000}
+
+springdoc:
+     api-docs:
+          enabled: ${SPRING_DOCS_ENABLE:true}
+          path: ${STRING_DOCS_PATH}
+          version: ${SPRING_DOCS_VERSION}
+     swagger-ui:
+          enabled: ${SPRING_DOC_SWAGGER_UI_ENABLE:true}
+          path: ${SPRING_DOC_SWAGGER_UI_PATH}
