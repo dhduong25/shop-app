@@ -36,4 +36,6 @@ public class UserController {
     public ResponseData.Success<PageResponse<UserDTO>> search(@Valid @ParameterObject SearchUserDTO req) {
         return this.userService.search(req);
     }
+
+    
 }
