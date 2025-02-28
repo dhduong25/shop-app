@@ -16,6 +16,9 @@ public class AppConstants {
     public static final String MM_YYYY_DASH = "MM-yyyy";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
+    public static final String MALE = "MALE";
+    public static final String FEMALE = "FEMALE";
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Order {
         public static final String DESC = "DESC";

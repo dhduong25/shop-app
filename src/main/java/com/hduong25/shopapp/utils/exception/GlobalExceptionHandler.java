@@ -48,6 +48,33 @@ public class GlobalExceptionHandler extends RuntimeException {
                 ));
     }
 
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ResponseData.Error> handleApiException(ApiException e) {
+        return ResponseEntity
+                .status(e.getStatus() != null
+                        ? e.getStatus()
+                        : HttpStatus.INTERNAL_SERVER_ERROR
+                )
+                .body(ResponseData.error(
+                        e.getStatus() != null
+                                ? e.getStatus().value()
+                                : HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        e.getMessage() != null
+                                ? e.getMessage()
+                                : "System error",
+                        ErrorResponse.of(
+                                e.getLocation() != null
+                                        ? e.getLocation()
+                                        : "System",
+                                e.getMethod() != null
+                                        ? e.getMethod()
+                                        : "System",
+                                "999",
+                                e.getMessage()
+                        )
+                ));
+    }
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex) {
         return ResponseEntity
