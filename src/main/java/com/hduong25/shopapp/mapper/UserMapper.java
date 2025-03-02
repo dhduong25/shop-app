@@ -21,4 +21,15 @@ public class UserMapper implements MapperUtils<UserEntity, UserDTO> {
     public UserDTO toDto(UserEntity entity) {
         return ModelMapperUtils.map(entity, UserDTO.class);
     }
+
+    @Override
+    public UserEntity mapOnUpdate(UserEntity entity, UserDTO dto) {
+        entity.setAddress(dto.getAddress());
+        entity.setEmail(dto.getEmail());
+        entity.setGender(dto.getGender());
+        entity.setName(dto.getName());
+        entity.setRole(dto.getRole());
+
+        return entity;
+    }
 }

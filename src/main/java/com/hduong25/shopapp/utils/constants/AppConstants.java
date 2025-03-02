@@ -24,4 +24,11 @@ public class AppConstants {
         public static final String DESC = "DESC";
         public static final String ASC = "ASC";
     }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Role {
+        public static final String ADMIN = "ADMIN";
+        public static final String EMPLOYEE = "EMPLOYEE";
+        public static final String CUSTOMER = "CUSTOMER";
+    }
 }
