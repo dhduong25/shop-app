@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,5 +38,12 @@ public class UserController {
         return this.userService.search(req);
     }
 
-    
+    @Operation(summary = "Users", description = "Details user API", tags = {"Users"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Details success", content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    })
+    @GetMapping("/details")
+    public ResponseData.Success<UserDTO> details(@RequestParam(value = "id", required = false) String id) {
+        return this.userService.details(id);
+    }
 }

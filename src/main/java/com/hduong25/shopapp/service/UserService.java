@@ -1,6 +1,5 @@
 package com.hduong25.shopapp.service;
 
-import com.hduong25.shopapp.dtos.user.DetailsUserDTO;
 import com.hduong25.shopapp.dtos.user.SearchUserDTO;
 import com.hduong25.shopapp.dtos.user.UserDTO;
 import com.hduong25.shopapp.utils.response.PageResponse;
@@ -15,5 +14,5 @@ public interface UserService {
 
     ResponseData.Success<String> save(UserDTO req);
 
-    ResponseData.Success<String> details(DetailsUserDTO req);
+    ResponseData.Success<UserDTO> details(String id);
 }

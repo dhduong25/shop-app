@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponseMessages {
 
+    public static final String USER_WITH_ID_NOT_FOUND = "user.with.id.notfound";
+    public static final String USER_DUPLICATE_EMAIL = "user.duplicate.email";
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Created {
         public static final String CREATED_USER_SUCCESS = "user.create.success";

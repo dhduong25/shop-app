@@ -1,6 +1,5 @@
 package com.hduong25.shopapp.service.impl;
 
-import com.hduong25.shopapp.dtos.user.DetailsUserDTO;
 import com.hduong25.shopapp.dtos.user.SearchUserDTO;
 import com.hduong25.shopapp.dtos.user.UserDTO;
 import com.hduong25.shopapp.entities.UserEntity;
@@ -10,17 +9,19 @@ import com.hduong25.shopapp.resutmessage.user.UserResponseMessages;
 import com.hduong25.shopapp.service.UserService;
 import com.hduong25.shopapp.utils.MessageUtils;
 import com.hduong25.shopapp.utils.exception.ApiException;
-import com.hduong25.shopapp.utils.exception.ResponseException;
 import com.hduong25.shopapp.utils.query.QueryUtils;
 import com.hduong25.shopapp.utils.response.PageResponse;
 import com.hduong25.shopapp.utils.response.ResponseData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: hduong25
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MessageUtils messageUtils;
@@ -50,17 +52,82 @@ public class UserServiceImpl implements UserService {
             );
         } catch (Exception e) {
             log.error("ERROR - Search user error with req: {} and Error Message: {}", req, e.getMessage());
-            throw new ApiException("Exception", HttpStatus.BAD_REQUEST, "Search user", "Search");
+            String errorMessage = this.messageUtils.getMessage(UserResponseMessages.Created.CREATED_USER_ERROR);
+            throw new ApiException(errorMessage, HttpStatus.BAD_REQUEST, "Search user", "Search");
         }
     }
 
     @Override
+    @Transactional
     public ResponseData.Success<String> save(UserDTO req) {
-        return null;
+        log.info("START - Save user with req: {}", req);
+        try {
+            this.checkDuplicate(req);
+            String id = StringUtils.isEmpty(req.getId())
+                    ? this.create(req)
+                    : this.update(req);
+
+            log.info("SUCCESS - Save user with req: {}, Successfully", req);
+            return ResponseData.ok(
+                    this.messageUtils.getMessage(UserResponseMessages.Created.CREATED_USER_SUCCESS),
+                    id
+            );
+        } catch (Exception e) {
+            log.error("ERROR - Save user with req: {}, Error message: {}", req, e.getMessage());
+            throw new ApiException(e);
+        }
     }
 
     @Override
-    public ResponseData.Success<String> details(DetailsUserDTO req) {
-        return null;
+    public ResponseData.Success<UserDTO> details(String id) {
+        log.info("START - Get details user");
+        try {
+            String idSearch = StringUtils.isEmpty(id)
+                    ? "123" // Lấy thông tin user từ token
+                    : id;
+            UserEntity entity = this.getUser(idSearch);
+            UserDTO dto = this.userMapper.toDto(entity);
+
+            log.info("SUCCESS - Get details user with ID: {}", idSearch);
+            return ResponseData.ok(dto);
+        } catch (Exception e) {
+            log.error("ERROR - Get user error - Error message: {}", e.getMessage());
+            throw new ApiException(e);
+        }
+    }
+
+    private String create(UserDTO req) {
+        UserEntity user = this.userMapper.toEntity(req);
+        user.setPassword(this.encodePassword(req.getPassword()));
+        this.userRepository.save(user);
+
+        return user.getId();
+    }
+
+    private String update(UserDTO req) {
+        UserEntity user = this.getUser(req.getId());
+        user = this.userMapper.mapOnUpdate(user, req);
+        this.userRepository.save(user);
+
+        return user.getId();
+    }
+
+    private void checkDuplicate(UserDTO req) {
+        this.userRepository.findByEmail(req.getEmail())
+                .ifPresent(e -> {
+                    if (!e.getId().equals(req.getId()))
+                        throw new ApiException(this.messageUtils.getMessage(UserResponseMessages.USER_DUPLICATE_EMAIL));
+                });
+    }
+
+    private String encodePassword(String password) {
+        return this.passwordEncoder.encode(password);
+    }
+
+    private UserEntity getUser(String id) {
+        String notFoundMessage = this.messageUtils.getMessage(UserResponseMessages.USER_WITH_ID_NOT_FOUND);
+
+        return this.userRepository.findById(id)
+                .orElseThrow(() -> new ApiException(notFoundMessage));
     }
 }

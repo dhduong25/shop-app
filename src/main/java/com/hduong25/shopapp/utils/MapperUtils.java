@@ -8,4 +8,6 @@ public interface MapperUtils<E, D> {
     E toEntity(D dto);
 
     D toDto(E entity);
+
+    E mapOnUpdate(E entity, D dto);
 }
