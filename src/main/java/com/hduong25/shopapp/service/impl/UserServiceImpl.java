@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final MessageUtils messageUtils;
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseData.Success<PageResponse<UserDTO>> search(SearchUserDTO req) {
         log.info("START - Search user with req: {}", req);
         try {
