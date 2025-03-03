@@ -1,4 +1,4 @@
-package com.hduong25.shopapp.resutmessage.user;
+package com.hduong25.shopapp.responsemessage.user;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class UserResponseMessages {
 
     public static final String USER_WITH_ID_NOT_FOUND = "user.with.id.notfound";
-    public static final String USER_DUPLICATE_EMAIL = "user.duplicate.email";
+    public static final String USER_DUPLICATE_EMAIL_OR_PHONE = "user.duplicate.email_or_phone";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Created {

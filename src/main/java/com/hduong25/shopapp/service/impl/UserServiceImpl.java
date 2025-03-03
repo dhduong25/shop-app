@@ -5,7 +5,8 @@ import com.hduong25.shopapp.dtos.user.UserDTO;
 import com.hduong25.shopapp.entities.UserEntity;
 import com.hduong25.shopapp.mapper.UserMapper;
 import com.hduong25.shopapp.repository.UserRepository;
-import com.hduong25.shopapp.resutmessage.user.UserResponseMessages;
+import com.hduong25.shopapp.responsemessage.user.UserResponseMessages;
+import com.hduong25.shopapp.service.CommonService;
 import com.hduong25.shopapp.service.UserService;
 import com.hduong25.shopapp.utils.MessageUtils;
 import com.hduong25.shopapp.utils.exception.ApiException;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends CommonService<UserEntity, String> implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -86,8 +87,8 @@ public class UserServiceImpl implements UserService {
             String idSearch = StringUtils.isEmpty(id)
                     ? "123" // Lấy thông tin user từ token
                     : id;
-            UserEntity entity = this.getUser(idSearch);
-            UserDTO dto = this.userMapper.toDto(entity);
+            UserEntity user = this.findEntityWithId(this.userRepository, idSearch, "User");
+            UserDTO dto = this.userMapper.toDto(user);
 
             log.info("SUCCESS - Get details user with ID: {}", idSearch);
             return ResponseData.ok(dto);
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private String update(UserDTO req) {
-        UserEntity user = this.getUser(req.getId());
+        UserEntity user = this.findEntityWithId(this.userRepository, req.getId(), "User");
         user = this.userMapper.mapOnUpdate(user, req);
         this.userRepository.save(user);
 
@@ -114,21 +115,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkDuplicate(UserDTO req) {
-        this.userRepository.findByEmail(req.getEmail())
+        // Check duplicate email
+        this.userRepository.findByEmailOrPhone(req.getEmail(), req.getPhone())
                 .ifPresent(e -> {
                     if (!e.getId().equals(req.getId()))
-                        throw new ApiException(this.messageUtils.getMessage(UserResponseMessages.USER_DUPLICATE_EMAIL));
+                        throw new ApiException(this.messageUtils.getMessage(UserResponseMessages.USER_DUPLICATE_EMAIL_OR_PHONE));
                 });
     }
 
     private String encodePassword(String password) {
         return this.passwordEncoder.encode(password);
-    }
-
-    private UserEntity getUser(String id) {
-        String notFoundMessage = this.messageUtils.getMessage(UserResponseMessages.USER_WITH_ID_NOT_FOUND);
-
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new ApiException(notFoundMessage));
     }
 }

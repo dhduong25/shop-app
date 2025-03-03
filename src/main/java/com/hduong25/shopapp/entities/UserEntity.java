@@ -37,4 +37,7 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "GENDER", length = 20)
     private String gender;
+
+    @Column(name = "PHONE", length = 100)
+    private String phone;
 }
