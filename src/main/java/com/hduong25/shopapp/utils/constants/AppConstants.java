@@ -16,8 +16,13 @@ public class AppConstants {
     public static final String MM_YYYY_DASH = "MM-yyyy";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
-    public static final String MALE = "MALE";
-    public static final String FEMALE = "FEMALE";
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Gender {
+        public static final String MALE = "MALE";
+        public static final String FEMALE = "FEMALE";
+
+        public static final String REGEX_GENDER = MALE + "|" + FEMALE;
+    }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Order {
@@ -30,5 +35,7 @@ public class AppConstants {
         public static final String ADMIN = "ADMIN";
         public static final String EMPLOYEE = "EMPLOYEE";
         public static final String CUSTOMER = "CUSTOMER";
+
+        public static final String REGEX_ROLE = ADMIN + "|" + EMPLOYEE + "|" + CUSTOMER;
     }
 }
