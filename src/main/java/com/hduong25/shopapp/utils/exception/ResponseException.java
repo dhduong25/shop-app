@@ -22,6 +22,14 @@ public class ResponseException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public ResponseException(String message) {
+        super(message);
+        this.status = HttpStatus.BAD_REQUEST;
+        this.location = "Shop app";
+        this.method = "Global";
+        this.errorCode = "999";
+    }
+
     // Factory method để tạo exception nhanh hơn
     public static ResponseException of(HttpStatus status, String location, String method, String errorCode, String message) {
         return new ResponseException(status, location, method, errorCode, message);

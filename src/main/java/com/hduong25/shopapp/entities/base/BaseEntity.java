@@ -1,6 +1,7 @@
 package com.hduong25.shopapp.entities.base;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +14,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +27,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public class BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "ID", updatable = false, length = 50)
@@ -49,4 +53,7 @@ public class BaseEntity {
 
     @Column(name = "IS_DELETED", nullable = false, columnDefinition = "bit(1) default 1")
     private boolean isDeleted;
+
+    @Column(name = "STATUS", nullable = false, columnDefinition = "varchar(50) default 'INACTIVE'")
+    private String status;
 }

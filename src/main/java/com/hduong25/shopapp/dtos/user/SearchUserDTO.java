@@ -15,5 +15,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchUserDTO extends Searchable {
+    private String email;
+    private String phone;
+    private String gender;
+    private String address;
+    private String role;
     private String name;
+    private Boolean isDeleted;
+    private String status;
 }
