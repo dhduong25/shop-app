@@ -1,15 +1,16 @@
 package com.hduong25.shopapp.service.impl;
 
+import com.hduong25.shopapp.dtos.user.DetailsUserDTO;
 import com.hduong25.shopapp.dtos.user.SearchUserDTO;
 import com.hduong25.shopapp.dtos.user.UserDTO;
 import com.hduong25.shopapp.entities.UserEntity;
 import com.hduong25.shopapp.mapper.UserMapper;
 import com.hduong25.shopapp.repository.UserRepository;
-import com.hduong25.shopapp.responsemessage.user.UserResponseMessages;
 import com.hduong25.shopapp.service.CommonService;
 import com.hduong25.shopapp.service.UserService;
 import com.hduong25.shopapp.utils.MessageUtils;
 import com.hduong25.shopapp.utils.exception.ApiException;
+import com.hduong25.shopapp.utils.exception.ResponseException;
 import com.hduong25.shopapp.utils.query.QueryUtils;
 import com.hduong25.shopapp.utils.response.PageResponse;
 import com.hduong25.shopapp.utils.response.ResponseData;
@@ -23,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.hduong25.shopapp.responsemessage.user.UserResponseMessages.*;
 
 /**
  * @author: hduong25
@@ -40,62 +43,61 @@ public class UserServiceImpl extends CommonService<UserEntity, String> implement
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseData.Success<PageResponse<UserDTO>> search(SearchUserDTO req) {
+    public ResponseData<PageResponse<UserDTO>> search(SearchUserDTO req) {
         log.info("START - Search user with req: {}", req);
         try {
             Pageable pageable = QueryUtils.createPageRequest(req, Sort.Order.desc("id"));
-            Page<UserEntity> entityPage = this.userRepository.findAll(pageable);
+            Page<UserEntity> entityPage = this.userRepository.findWithFilter(req, pageable);
 
             log.info("SUCCESS - Search user success with req: {}", req);
-            String message = this.messageUtils.getMessage(UserResponseMessages.Created.CREATED_USER_SUCCESS);
+            String message = this.messageUtils.getMessage(SEARCH_USER_SUCCESS);
             return ResponseData.ok(
                     message,
                     new PageResponse<>(entityPage.map(this.userMapper::toDto))
             );
         } catch (Exception e) {
             log.error("ERROR - Search user error with req: {} and Error Message: {}", req, e.getMessage());
-            String errorMessage = this.messageUtils.getMessage(UserResponseMessages.Created.CREATED_USER_ERROR);
+            String errorMessage = this.messageUtils.getMessage(Created.CREATED_USER_ERROR);
             throw new ApiException(errorMessage, HttpStatus.BAD_REQUEST, "Search user", "Search");
         }
     }
 
     @Override
     @Transactional
-    public ResponseData.Success<String> save(UserDTO req) {
+    public ResponseData<String> save(UserDTO req) {
         log.info("START - Save user with req: {}", req);
-        try {
-            this.checkDuplicate(req);
-            String id = StringUtils.isEmpty(req.getId())
-                    ? this.create(req)
-                    : this.update(req);
+        this.checkDuplicate(req);
+        String id = StringUtils.isEmpty(req.getId())
+                ? this.create(req)
+                : this.update(req);
 
-            log.info("SUCCESS - Save user with req: {}, Successfully", req);
-            return ResponseData.ok(
-                    this.messageUtils.getMessage(UserResponseMessages.Created.CREATED_USER_SUCCESS),
-                    id
-            );
-        } catch (Exception e) {
-            log.error("ERROR - Save user with req: {}, Error message: {}", req, e.getMessage());
-            throw new ApiException(e);
-        }
+        log.info("SUCCESS - Save user with req: {}, Successfully", req);
+        return ResponseData.ok(
+                this.messageUtils.getMessage(Created.CREATED_USER_SUCCESS),
+                id
+        );
     }
 
     @Override
-    public ResponseData.Success<UserDTO> details(String id) {
+    public ResponseData<UserDTO> details(String id) {
         log.info("START - Get details user");
-        try {
-            String idSearch = StringUtils.isEmpty(id)
-                    ? "123" // Lấy thông tin user từ token
-                    : id;
-            UserEntity user = this.findEntityWithId(this.userRepository, idSearch, "User");
-            UserDTO dto = this.userMapper.toDto(user);
+        String idSearch = StringUtils.isEmpty(id)
+                ? "123" // Lấy thông tin user từ token
+                : id;
+        UserEntity user = this.findEntityWithId(this.userRepository, idSearch, "User");
+        UserDTO dto = this.userMapper.toDto(user);
 
-            log.info("SUCCESS - Get details user with ID: {}", idSearch);
-            return ResponseData.ok(dto);
-        } catch (Exception e) {
-            log.error("ERROR - Get user error - Error message: {}", e.getMessage());
-            throw new ApiException(e);
-        }
+        log.info("SUCCESS - Get details user with ID: {}", idSearch);
+        return ResponseData.ok(dto);
+    }
+
+    @Override
+    public ResponseData<String> deleted(DetailsUserDTO req) {
+        UserEntity user = this.findEntityWithId(this.userRepository, req.getId(), "User");
+        user.setDeleted(true);
+        this.userRepository.save(user);
+
+        return ResponseData.ok(this.messageUtils.getMessage("user.deleted.success"));
     }
 
     private String create(UserDTO req) {
@@ -115,11 +117,10 @@ public class UserServiceImpl extends CommonService<UserEntity, String> implement
     }
 
     private void checkDuplicate(UserDTO req) {
-        // Check duplicate email
         this.userRepository.findByEmailOrPhone(req.getEmail(), req.getPhone())
                 .ifPresent(e -> {
                     if (!e.getId().equals(req.getId()))
-                        throw new ApiException(this.messageUtils.getMessage(UserResponseMessages.USER_DUPLICATE_EMAIL_OR_PHONE));
+                        throw new ResponseException(this.messageUtils.getMessage(USER_DUPLICATE_EMAIL_OR_PHONE));
                 });
     }
 

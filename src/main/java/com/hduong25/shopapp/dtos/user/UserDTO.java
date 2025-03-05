@@ -40,4 +40,6 @@ public class UserDTO extends BaseDTO {
     @Size(max = 20, message = "Role" + SIZE_MAX)
     @Pattern(regexp = AppConstants.Role.REGEX_ROLE, message = ROLE_INVALID)
     private String role;
+
+    private String status;
 }

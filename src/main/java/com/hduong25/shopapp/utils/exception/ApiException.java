@@ -13,25 +13,28 @@ public class ApiException extends RuntimeException {
     private final String location;
     private final String method;
 
+    private static final String L = "com.hduong25.shopapp";
+    private static final String M = "API Exception";
+
     public ApiException(String message) {
         super(message);
-        this.status = null;
-        this.location = null;
-        this.method = null;
+        this.status = HttpStatus.BAD_REQUEST;
+        this.location = L;
+        this.method = M;
     }
 
     public ApiException(String message, Throwable cause) {
         super(message, cause);
-        this.status = null;
-        this.location = null;
-        this.method = null;
+        this.status = HttpStatus.BAD_REQUEST;
+        this.location = L;
+        this.method = M;
     }
 
     public ApiException(Throwable cause) {
         super(cause);
-        this.status = null;
-        this.location = null;
-        this.method = null;
+        this.status = HttpStatus.BAD_REQUEST;
+        this.location = L;
+        this.method = M;
     }
 
     public ApiException(String message, HttpStatus status, String location, String method) {

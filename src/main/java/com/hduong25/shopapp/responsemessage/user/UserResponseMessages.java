@@ -12,6 +12,7 @@ public class UserResponseMessages {
 
     public static final String USER_WITH_ID_NOT_FOUND = "user.with.id.notfound";
     public static final String USER_DUPLICATE_EMAIL_OR_PHONE = "user.duplicate.email_or_phone";
+    public static final String SEARCH_USER_SUCCESS = "user.search.success";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Created {
