@@ -79,11 +79,11 @@ public class UserServiceImpl extends CommonService<UserEntity, String> implement
     }
 
     @Override
-    public ResponseData<UserDTO> details(String id) {
+    public ResponseData<UserDTO> details(DetailsUserDTO req) {
         log.info("START - Get details user");
-        String idSearch = StringUtils.isEmpty(id)
+        String idSearch = StringUtils.isEmpty(req.getId())
                 ? "123" // Lấy thông tin user từ token
-                : id;
+                : req.getId();
         UserEntity user = this.findEntityWithId(this.userRepository, idSearch, "User");
         UserDTO dto = this.userMapper.toDto(user);
 
