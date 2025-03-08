@@ -39,4 +39,15 @@ public class AppConstants {
 
         public static final String REGEX_ROLE = ADMIN + "|" + EMPLOYEE + "|" + CUSTOMER;
     }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Status {
+        public static final String ACTIVE = "ACTIVE";
+        public static final String INACTIVE = "INACTIVE";
+
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class OrderStatus {
+            public static final String PENDING = "PENDING";
+        }
+    }
 }
