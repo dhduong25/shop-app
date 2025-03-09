@@ -43,7 +43,7 @@ public class UserController implements BaseController<UserDTO, SearchUserDTO, De
     }
 
     @Override
-    @Operation(summary = "Deleted", description = "API Xoá người dùng")
+    @Operation(summary = "Deleted User", description = "API Xoá người dùng")
     public ResponseData<String> deleted(DetailsUserDTO req) {
         return this.userService.deleted(req);
     }

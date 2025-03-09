@@ -36,7 +36,6 @@ spring:
           basename: i18n/messages
           encoding: UTF-8
 
-
 server:
      port: ${PORT:3000}
 

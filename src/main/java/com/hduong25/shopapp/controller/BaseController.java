@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 
 public interface BaseController<R, F, D> {
+
+    /*
+        - R: RequestDTO
+        - F: FilterDTO
+        - D: DetailsDTO
+     */
+
     @PostMapping(value = "/save", name = "API Save or Update data")
     ResponseData<String> save(@Parameter(in = ParameterIn.DEFAULT, description = "Request body", schema = @Schema())
                               @Valid @RequestBody R req);
@@ -30,5 +37,5 @@ public interface BaseController<R, F, D> {
 
     @GetMapping(value = "/deleted", name = "API Deleted data")
     ResponseData<String> deleted(@Parameter(in = ParameterIn.QUERY, description = "Request body", schema = @Schema())
-                                 @Valid @RequestBody D req);
+                                 @Valid @ParameterObject D req);
 }
