@@ -8,6 +8,13 @@ import com.hduong25.shopapp.utils.response.ResponseData;
  */
 
 public interface BaseService<R, F, D> {
+
+    /*
+        - R: RequestDTO
+        - F: FilterDTO
+        - D: DetailsDTO
+     */
+
     ResponseData<String> save(R req);
 
     ResponseData<PageResponse<R>> search(F req);
