@@ -25,7 +25,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
             where (:#{#req.name} is null or u.name like '%' || :#{#req.name} || '%')
               and (:#{#req.phone} is null or u.phone like '%' || :#{#req.phone} || '%')
               and (:#{#req.email} is null or u.email like '%' || :#{#req.email} || '%')
-              and (:#{#req.address} is null or u.address like '%' || :#{#req.address} || '%')
               and (:#{#req.gender} is null or u.gender = :#{#req.gender})
               and (:#{#req.role} is null or u.role = :#{#req.role})
               and (:#{#req.isDeleted} is not null and u.isDeleted = :#{#req.isDeleted} or u.isDeleted <> true)

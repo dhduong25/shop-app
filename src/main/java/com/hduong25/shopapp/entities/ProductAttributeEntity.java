@@ -21,24 +21,16 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PRODUCT_DETAILS")
-public class ProductDetailsEntity extends BaseEntity {
-    @Column(name = "PRODUCT_ID", columnDefinition = "VARCHAR(50) NOT NULL")
+@Table(name = "PRODUCT_ATTRIBUTE")
+public class ProductAttributeEntity extends BaseEntity {
+    @Column(name = "CODE", columnDefinition = "VARCHAR(50)", nullable = false)
+    private String code;
+
+    @Column(name = "NAME", columnDefinition = "VARCHAR(50)", nullable = false)
+    private String name;
+
+    @Column(name = "PRODUCT_ID", columnDefinition = "VARCHAR(50)", nullable = false)
     private String productId;
-
-    @Column(name = "COLOR_ID", columnDefinition = "VARCHAR(50) NOT NULL")
-    private String colorId;
-
-    @Column(name = "SIZE_ID", columnDefinition = "VARCHAR(50) NOT NULL")
-    private String sizeId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COLOR_ID", referencedColumnName = "ID", insertable = false, updatable = false)
-    private CategoryEntity color;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SIZE_ID", referencedColumnName = "ID", insertable = false, updatable = false)
-    private CategoryEntity size;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID", insertable = false, updatable = false)

@@ -50,4 +50,10 @@ public class AppConstants {
             public static final String PENDING = "PENDING";
         }
     }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class CategoryType {
+        public static final String COLOR = "COLOR";
+        public static final String SIZE = "SIZE";
+    }
 }

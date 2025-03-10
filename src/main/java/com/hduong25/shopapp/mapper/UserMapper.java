@@ -24,7 +24,6 @@ public class UserMapper implements MapperUtils<UserEntity, UserDTO> {
 
     @Override
     public UserEntity mapOnUpdate(UserEntity entity, UserDTO dto) {
-        entity.setAddress(dto.getAddress());
         entity.setEmail(dto.getEmail());
         entity.setGender(dto.getGender());
         entity.setName(dto.getName());
